@@ -1,44 +1,61 @@
-# **/e.-xviaa-a02/ - RustySentinel: Web Pentest Tool**
+# 🛡️ **Rusty-Sentinel**
 
-**/e.-xviaa-a02/** adalah sebuah alat pemindaian web berbasis **Rust** yang dirancang untuk mendeteksi kebocoran file sensitif dan kerentanannya di website target. Alat ini mengutamakan **keamanan dan kecepatan**, serta menyediakan **antarmuka pengguna berbasis terminal (TUI)** yang modern dan responsif. Proyek ini sangat cocok bagi para pentester dan profesional keamanan siber yang ingin memastikan bahwa tidak ada data sensitif yang terekspos di web.
+[![Rust](https://img.shields.io/badge/language-Rust-orange.svg)](https://www.rust-lang.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Arch%20Linux%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://www.archlinux.org/)
 
----
+**Rusty-Sentinel** adalah alat pemindai kerentanan (*vulnerability scanner*) berbasis Rust yang dirancang untuk kecepatan ekstrem dan efisiensi memori. Alat ini melakukan pemindaian asinkron terhadap path sensitif dan menggunakan analisis pola Regex untuk mendeteksi kebocoran data seperti **API Keys**, **kredensial database**, dan **file konfigurasi** yang terekspos.
 
-## **Fitur Utama**
-
-- **Pemindaian File Sensitif**: Menemukan file sensitif seperti `.env`, `wp-config.php`, dan `id_rsa`.
-- **Deteksi Konfigurasi yang Terbuka**: Memeriksa kebocoran informasi dari konfigurasi web dan environment variables.
-- **Pemindaian HTTP Headers**: Mendeteksi header HTTP yang mungkin memberi informasi lebih tentang server atau aplikasi web.
-- **Tampilan Terminal Modern (TUI)**: Menampilkan hasil pemindaian dalam antarmuka pengguna berbasis terminal yang dinamis dan interaktif menggunakan pustaka `ratatui`.
-- **Pemindaian Paralel**: Mendukung pemindaian yang cepat dengan menggunakan pemrograman asinkron `tokio` untuk melakukan pemindaian paralel.
-- **Real-time Findings**: Menampilkan temuan secara langsung dengan color-coding yang membedakan tingkat keparahan temuan.
+Dengan fokus utama pada keamanan aplikasi web, Rusty-Sentinel memungkinkan pentester dan pengembang untuk memindai web target dengan lebih cepat dan efisien, serta menemukan potensi celah keamanan yang seringkali tersembunyi di antara ribuan file dan konfigurasi yang terabaikan.
 
 ---
 
-## **Tampilan Aplikasi**
+## ✨ **Fitur Utama**
 
-![UI Screenshot](https://via.placeholder.com/800x400.png)  
-*Tampilan antarmuka pengguna terminal RustySentinel yang sedang memindai website target.*
+-   **⚡ Performa Tinggi**: Dibangun di atas runtime **Tokio**, memungkinkan ribuan request asinkron berjalan secara paralel tanpa membebani CPU.
+-   **🔍 Deteksi Pintar dengan Regex**: Menggunakan **engine Regex** untuk mendeteksi pola sensitif seperti **AWS Keys**, **RSA Private Keys**, **Database Credentials**, dan **API Keys**.
+-   **📂 Manajemen Wordlist yang Fleksibel**: Mendukung input **wordlist** eksternal untuk pemindaian path yang lebih spesifik, menyesuaikan dengan kebutuhan keamanan yang berbeda.
+-   **📝 Pelaporan Otomatis**: Hasil scan disimpan secara otomatis dalam **`results.txt`** dengan timestamp yang akurat untuk pencatatan yang lebih rapi dan mudah dianalisis.
+-   **🎨 Output Interaktif dengan Terminal UI**: Menampilkan hasil scan secara langsung dengan **UI terminal interaktif**, termasuk color-coding untuk status scan dan tingkat keparahan temuan.
+-   **🔒 Keamanan dan Privasi**: Tidak menyimpan atau mengirimkan data pemindaian ke server eksternal. Semua pemindaian sepenuhnya lokal.
 
 ---
 
-## **Instalasi dan Pengaturan**
+## 🏗️ **Arsitektur Proyek**
 
-### 1. **Persyaratan Sistem**
+Proyek ini dibangun dengan struktur modular yang memungkinkan pengembangan yang lebih terorganisir dan dapat diperluas:
 
-Sebelum memulai, pastikan **Rust** sudah terpasang di sistemmu. Kamu bisa mengunduh dan menginstalnya dari situs resmi [Rust](https://www.rust-lang.org/).
+### **File dan Modul Utama:**
 
-Selain itu, alat ini membutuhkan beberapa dependensi tambahan yang tercatat di **Cargo.toml**:
+-   **`src/main.rs`**: 
+    - Merupakan entry point dari aplikasi ini. Mengatur alur utama aplikasi dengan menjalankan pemindaian, pengolahan data, dan interaksi dengan user melalui antarmuka terminal.
+    - Mengatur concurrency dengan **`tokio`**, mengelola batas request paralel dan pembatasan aliran data.
+  
+-   **`src/signatures.rs`**: 
+    - Menyimpan **patterns Regex** yang digunakan untuk mendeteksi file sensitif dan kerentanannya.
+    - Daftar signature ini bisa dikustomisasi untuk mencari pola-pola lain sesuai kebutuhan pengguna.
+    - Memiliki struktur data yang memungkinkan penambahan atau pengubahan signature dengan mudah.
 
-- `reqwest`: Untuk mengirimkan permintaan HTTP.
-- `tokio`: Untuk pemrograman asinkron.
-- `ratatui`: Untuk antarmuka pengguna berbasis terminal.
-- `crossterm`: Untuk menangani input pengguna di terminal.
+-   **`src/report.rs`**: 
+    - Modul untuk menangani **log pemindaian** dan **pelaporan temuan**.
+    - Temuan dari pemindaian akan disimpan dalam file **`results.txt`** yang disertai timestamp untuk referensi lebih lanjut.
+    - Fitur **pelaporan otomatis** mempermudah pencatatan hasil scan tanpa perlu campur tangan manual.
 
-### 2. **Clone Repository**
+-   **`wordlist.txt`**: 
+    - Daftar path file dan URL target yang akan dipindai.
+    - Bisa dikustomisasi oleh pengguna untuk menambahkan path atau file yang lebih relevan dengan struktur aplikasi yang sedang diuji.
+  
+---
 
-Untuk memulai, clone repositori ini ke direktori lokal kamu dengan perintah berikut:
+## 🚀 **Memulai (Instalasi di Arch Linux)**
+
+### **Prasyarat**
+Sebelum memulai, pastikan sistem Anda memenuhi prasyarat berikut:
+- **Rust toolchain** untuk membangun dan menjalankan aplikasi.
+- **OpenSSL** untuk mendukung koneksi HTTPS yang aman.
+
+Install dependencies di **Arch Linux** dengan perintah berikut:
 
 ```bash
-git clone https://github.com/username/e.-xviaa-a02.git
-cd e.-xviaa-a02
+sudo pacman -S rustup base-devel openssl pkgconf
+rustup default stable
