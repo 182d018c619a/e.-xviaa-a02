@@ -1,17 +1,8 @@
-[package]
-name = "rusty-sentinel"
-version = "0.1.0"
-edition = "2021"
-
 [dependencies]
-# Jantung untuk async (Wajib untuk #[tokio::main])
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 tokio = { version = "1", features = ["full"] }
-
-# Untuk kirim HTTP request (Wajib untuk reqwest::Client)
-reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
-
-# Untuk memproses banyak request sekaligus (Wajib untuk stream)
 futures = "0.3"
-
-# Untuk warna di terminal (Wajib untuk .red(), .green())
+ratatui = "0.6"
+crossterm = "0.26"
+regex = "1"
 colored = "2"
