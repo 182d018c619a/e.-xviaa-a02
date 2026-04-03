@@ -1,61 +1,55 @@
-# 🛡️ **Rusty-Sentinel**
+# Rusty-Sentinel: High-Performance Asynchronous Security Scanner
 
 [![Rust](https://img.shields.io/badge/language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Arch%20Linux%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://www.archlinux.org/)
 
-**Rusty-Sentinel** adalah alat pemindai kerentanan (*vulnerability scanner*) berbasis Rust yang dirancang untuk kecepatan ekstrem dan efisiensi memori. Alat ini melakukan pemindaian asinkron terhadap path sensitif dan menggunakan analisis pola Regex untuk mendeteksi kebocoran data seperti **API Keys**, **kredensial database**, dan **file konfigurasi** yang terekspos.
-
-Dengan fokus utama pada keamanan aplikasi web, Rusty-Sentinel memungkinkan pentester dan pengembang untuk memindai web target dengan lebih cepat dan efisien, serta menemukan potensi celah keamanan yang seringkali tersembunyi di antara ribuan file dan konfigurasi yang terabaikan.
+**Rusty-Sentinel** (Project ID: `e.-xviaa-a02`) adalah instrumen audit keamanan berbasis Rust yang dioptimalkan untuk pemindaian jalur sensitif (*sensitive path discovery*) dan deteksi kebocoran informasi (*information exposure*). Menggunakan paradigma pemrograman asinkron, alat ini mampu melakukan inspeksi massal terhadap infrastruktur web dengan footprint memori yang minimal namun dengan throughput yang maksimal.
 
 ---
 
-## ✨ **Fitur Utama**
+## 1. Spesifikasi Teknis dan Core Engine
 
--   **⚡ Performa Tinggi**: Dibangun di atas runtime **Tokio**, memungkinkan ribuan request asinkron berjalan secara paralel tanpa membebani CPU.
--   **🔍 Deteksi Pintar dengan Regex**: Menggunakan **engine Regex** untuk mendeteksi pola sensitif seperti **AWS Keys**, **RSA Private Keys**, **Database Credentials**, dan **API Keys**.
--   **📂 Manajemen Wordlist yang Fleksibel**: Mendukung input **wordlist** eksternal untuk pemindaian path yang lebih spesifik, menyesuaikan dengan kebutuhan keamanan yang berbeda.
--   **📝 Pelaporan Otomatis**: Hasil scan disimpan secara otomatis dalam **`results.txt`** dengan timestamp yang akurat untuk pencatatan yang lebih rapi dan mudah dianalisis.
--   **🎨 Output Interaktif dengan Terminal UI**: Menampilkan hasil scan secara langsung dengan **UI terminal interaktif**, termasuk color-coding untuk status scan dan tingkat keparahan temuan.
--   **🔒 Keamanan dan Privasi**: Tidak menyimpan atau mengirimkan data pemindaian ke server eksternal. Semua pemindaian sepenuhnya lokal.
+### 1.1 Asynchronous Runtime
+Dibangun di atas runtime **Tokio**, Rusty-Sentinel mengimplementasikan model I/O non-blocking yang memungkinkan penanganan ribuan koneksi konkuren secara simultan tanpa overhead thread sistem operasi yang besar.
+
+### 1.2 Concurrency Control
+Sistem menggunakan modul `std::sync::Arc` untuk berbagi state antar thread secara aman dan `tokio::sync::Semaphore` sebagai mekanisme *rate-limiting*. Hal ini memastikan beban request tetap terkendali dan mencegah *socket exhaustion* pada sistem host (Arch Linux).
+
+### 1.3 Heuristic Pattern Matching
+Engine deteksi menggunakan library `Regex` yang dikompilasi satu kali pada fase inisialisasi untuk melakukan pencarian heuristik pada payload HTTP response. Sistem mendeteksi pola spesifik seperti:
+* **Kriptografi**: RSA Private Keys, SSH Keys.
+* **Cloud Credentials**: AWS Access Keys (AKIA), Firebase Instance URLs.
+* **Database**: Connection Strings (MySQL, MongoDB, PostgreSQL).
+* **Environment**: Kebocoran variabel `.env` (DB_PASSWORD, SECRET_KEY).
 
 ---
 
-## 🏗️ **Arsitektur Proyek**
+## 2. Dekonstruksi Arsitektur Modular
 
-Proyek ini dibangun dengan struktur modular yang memungkinkan pengembangan yang lebih terorganisir dan dapat diperluas:
+Proyek ini mengadopsi desain modular guna memisahkan logika bisnis dari manajemen I/O:
 
-### **File dan Modul Utama:**
+### 2.1 Orchestration Layer (`src/main.rs`)
+Bertanggung jawab atas:
+* Inisialisasi runtime dan pemrosesan argumen via `Clap`.
+* Manajemen siklus hidup HTTP request menggunakan `Reqwest`.
+* Implementasi `buffer_unordered` untuk memproses stream tugas secara paralel.
 
--   **`src/main.rs`**: 
-    - Merupakan entry point dari aplikasi ini. Mengatur alur utama aplikasi dengan menjalankan pemindaian, pengolahan data, dan interaksi dengan user melalui antarmuka terminal.
-    - Mengatur concurrency dengan **`tokio`**, mengelola batas request paralel dan pembatasan aliran data.
-  
--   **`src/signatures.rs`**: 
-    - Menyimpan **patterns Regex** yang digunakan untuk mendeteksi file sensitif dan kerentanannya.
-    - Daftar signature ini bisa dikustomisasi untuk mencari pola-pola lain sesuai kebutuhan pengguna.
-    - Memiliki struktur data yang memungkinkan penambahan atau pengubahan signature dengan mudah.
+### 2.2 Detection Logic (`src/signatures.rs`)
+Komponen ini merupakan basis pengetahuan scanner. Setiap signature didefinisikan dengan:
+* **Pattern**: Ekspresi reguler untuk identifikasi data sensitif.
+* **Severity**: Klasifikasi dampak temuan (Critical, High, Medium, Low).
 
--   **`src/report.rs`**: 
-    - Modul untuk menangani **log pemindaian** dan **pelaporan temuan**.
-    - Temuan dari pemindaian akan disimpan dalam file **`results.txt`** yang disertai timestamp untuk referensi lebih lanjut.
-    - Fitur **pelaporan otomatis** mempermudah pencatatan hasil scan tanpa perlu campur tangan manual.
+### 2.3 Reporting Subsystem (`src/report.rs`)
+Menangani abstraksi I/O file hasil temuan. Implementasi menggunakan `OpenOptions` dengan mode *append* untuk memastikan persistensi data tanpa risiko *data overwriting* pada sesi pemindaian berikutnya.
 
--   **`wordlist.txt`**: 
-    - Daftar path file dan URL target yang akan dipindai.
-    - Bisa dikustomisasi oleh pengguna untuk menambahkan path atau file yang lebih relevan dengan struktur aplikasi yang sedang diuji.
-  
 ---
 
-## 🚀 **Memulai (Instalasi di Arch Linux)**
+## 3. Prosedur Instalasi (Optimasi Arch Linux)
 
-### **Prasyarat**
-Sebelum memulai, pastikan sistem Anda memenuhi prasyarat berikut:
-- **Rust toolchain** untuk membangun dan menjalankan aplikasi.
-- **OpenSSL** untuk mendukung koneksi HTTPS yang aman.
-
-Install dependencies di **Arch Linux** dengan perintah berikut:
+### 3.1 Prasyarat Sistem
+Pastikan toolchain Rust dan library TLS telah terkonfigurasi:
 
 ```bash
-sudo pacman -S rustup base-devel openssl pkgconf
+sudo pacman -S --needed rustup base-devel openssl pkgconf
 rustup default stable
