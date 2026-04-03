@@ -1,28 +1,13 @@
 [package]
-name = "e.-xviaa-a02"
+name = "e_xviaa_a02"
 version = "0.1.0"
 edition = "2021"
-authors = ["Exviaa"]
-description = "High-performance asynchronous security scanner"
 
 [dependencies]
-# Runtime asinkron untuk menangani ribuan request
 tokio = { version = "1", features = ["full"] }
-
-# HTTP Client dengan dukungan TLS (OpenSSL/Rustls)
 reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
-
-# Stream utilities untuk concurrency
 futures = "0.3"
-
-# Antarmuka terminal berwarna
 colored = "2"
-
-# Command Line Argument Parser
 clap = { version = "4", features = ["derive"] }
-
-# Engine deteksi pola sensitif
 regex = "1"
-
-# Manajemen waktu untuk logging
 chrono = "0.4"
