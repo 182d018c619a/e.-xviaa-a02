@@ -1,69 +1,44 @@
-# 🛡️ e.-xviaa-a02 (v1.0.0-alpha)
-### High-Performance Asynchronous Intelligence & Data Leakage Scanner
+# **/e.-xviaa-a02/ - RustySentinel: Web Pentest Tool**
 
-[![Rust Engine](https://img.shields.io/badge/Engine-Rust%202021-orange?logo=rust)](https://www.rust-lang.org/)
-[![Safety](https://img.shields.io/badge/Memory-Safe-blue?logo=shield)](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
-[![Concurrency](https://img.shields.io/badge/Concurrency-Tokio%20Runtime-red)](https://tokio.rs/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-**Rusty-Sentinel** adalah instrumen audit keamanan siber tingkat lanjut yang dirancang khusus untuk mendeteksi *sensitive data exposure* pada infrastruktur web skala besar. Dibangun dengan fokus pada **Zero-Cost Abstractions** dan **Extreme Parallelism**, alat ini mampu melakukan pemindaian ribuan endpoint dalam hitungan detik tanpa mengorbankan stabilitas sistem.
+**/e.-xviaa-a02/** adalah sebuah alat pemindaian web berbasis **Rust** yang dirancang untuk mendeteksi kebocoran file sensitif dan kerentanannya di website target. Alat ini mengutamakan **keamanan dan kecepatan**, serta menyediakan **antarmuka pengguna berbasis terminal (TUI)** yang modern dan responsif. Proyek ini sangat cocok bagi para pentester dan profesional keamanan siber yang ingin memastikan bahwa tidak ada data sensitif yang terekspos di web.
 
 ---
 
-## 🏗️ Technical Architecture & Workflow
+## **Fitur Utama**
 
-Rusty-Sentinel beroperasi menggunakan model **Producer-Consumer** yang diatur oleh sistem *Semaphore* untuk memastikan efisiensi I/O maksimal.
-
-
-
-1. **Target Ingestion**: Memproses daftar target dan wordlist secara asinkron.
-2. **Semaphore Gatekeeping**: Membatasi *concurrent requests* untuk menghindari deteksi WAF (Web Application Firewall).
-3. **Response Analysis**: Melakukan inspeksi header dan body response secara *real-time*.
-4. **Deep Pattern Matching**: Menggunakan mesin Regex teroptimasi untuk mengidentifikasi kebocoran kredensial.
+- **Pemindaian File Sensitif**: Menemukan file sensitif seperti `.env`, `wp-config.php`, dan `id_rsa`.
+- **Deteksi Konfigurasi yang Terbuka**: Memeriksa kebocoran informasi dari konfigurasi web dan environment variables.
+- **Pemindaian HTTP Headers**: Mendeteksi header HTTP yang mungkin memberi informasi lebih tentang server atau aplikasi web.
+- **Tampilan Terminal Modern (TUI)**: Menampilkan hasil pemindaian dalam antarmuka pengguna berbasis terminal yang dinamis dan interaktif menggunakan pustaka `ratatui`.
+- **Pemindaian Paralel**: Mendukung pemindaian yang cepat dengan menggunakan pemrograman asinkron `tokio` untuk melakukan pemindaian paralel.
+- **Real-time Findings**: Menampilkan temuan secara langsung dengan color-coding yang membedakan tingkat keparahan temuan.
 
 ---
 
-## 🚀 Fitur Utama (Advanced Features)
+## **Tampilan Aplikasi**
 
-### 1. ⚡ Extreme Concurrent Engine
-Berbeda dengan scanner berbasis Python yang terhambat oleh GIL (Global Interpreter Lock), Rusty-Sentinel menggunakan **Tokio Runtime** untuk mengeksekusi ribuan *non-blocking tasks* secara benar-benar paralel.
-
-### 2. 🔍 Heuristic Content Inspection
-Bukan sekadar pengecekan status HTTP. Mesin kami melakukan pemindaian isi file untuk menemukan:
-* **Cloud Infrastructure Keys**: AWS (Access/Secret), Google Cloud, Azure.
-* **Database Strings**: Koneksi PostgreSQL, MongoDB, MySQL yang terekspos.
-* **Environment Files**: `.env`, `.bash_history`, `docker-compose.yml`.
-* **CI/CD Leaks**: `.travis.yml`, `.github/workflows/`, Jenkins configs.
-
-### 3. 🛡️ Intelligent Rate Limiting
-Sistem otomatis yang menunda request jika mendeteksi respon `429 Too Many Requests`, memastikan proses pemindaian tetap berjalan di bawah radar sistem keamanan target.
+![UI Screenshot](https://via.placeholder.com/800x400.png)  
+*Tampilan antarmuka pengguna terminal RustySentinel yang sedang memindai website target.*
 
 ---
 
-## 💻 Spesifikasi Teknis & Dependensi
+## **Instalasi dan Pengaturan**
 
-| Kategori | Teknologi | Kegunaan |
-| :--- | :--- | :--- |
-| **Language** | Rust 1.70+ | Kecepatan setara C++, Keamanan memori terjamin. |
-| **Async Core** | `Tokio` v1.0 | Runtime asinkron untuk performa I/O tinggi. |
-| **HTTP Layer** | `Reqwest` | Mendukung TLS 1.3, HTTP/2, dan custom headers. |
-| **Stream Proc** | `Futures` | Memproses aliran data besar secara efisien. |
-| **Visuals** | `Colored` | Reporting terminal yang intuitif dan profesional. |
+### 1. **Persyaratan Sistem**
 
----
+Sebelum memulai, pastikan **Rust** sudah terpasang di sistemmu. Kamu bisa mengunduh dan menginstalnya dari situs resmi [Rust](https://www.rust-lang.org/).
 
-## 🛠️ Instalasi & Deployment
+Selain itu, alat ini membutuhkan beberapa dependensi tambahan yang tercatat di **Cargo.toml**:
 
-### Build dari Source
-Pastikan Anda memiliki [Rust Toolchain](https://rustup.rs/) terinstal di sistem Anda.
+- `reqwest`: Untuk mengirimkan permintaan HTTP.
+- `tokio`: Untuk pemrograman asinkron.
+- `ratatui`: Untuk antarmuka pengguna berbasis terminal.
+- `crossterm`: Untuk menangani input pengguna di terminal.
+
+### 2. **Clone Repository**
+
+Untuk memulai, clone repositori ini ke direktori lokal kamu dengan perintah berikut:
 
 ```bash
-# Clone repositori
-git clone [https://github.com/182d018c619a/rusty-sentinel.git](https://github.com/182d018c619a/rusty-sentinel.git)
-cd rusty-sentinel
-
-# Build untuk performa maksimal (Mode Release)
-cargo build --release
-
-# Jalankan biner hasil build
-./target/release/rusty-sentinel
+git clone https://github.com/username/e.-xviaa-a02.git
+cd e.-xviaa-a02
