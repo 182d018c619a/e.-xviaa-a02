@@ -1,17 +1,17 @@
-# Rusty-Sentinel: High-Performance Asynchronous Security Scanner
+# e.-xviaa-a02: High-Performance Asynchronous Security Scanner
 
 [![Rust](https://img.shields.io/badge/language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Arch%20Linux%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://www.archlinux.org/)
 
-**Rusty-Sentinel** (Project ID: `e.-xviaa-a02`) adalah instrumen audit keamanan berbasis Rust yang dioptimalkan untuk pemindaian jalur sensitif (*sensitive path discovery*) dan deteksi kebocoran informasi (*information exposure*). Menggunakan paradigma pemrograman asinkron, alat ini mampu melakukan inspeksi massal terhadap infrastruktur web dengan footprint memori yang minimal namun dengan throughput yang maksimal.
+**e.-xviaa-a02** adalah instrumen audit keamanan berbasis Rust yang dioptimalkan untuk pemindaian jalur sensitif (*sensitive path discovery*) dan deteksi kebocoran informasi (*information exposure*). Menggunakan paradigma pemrograman asinkron, alat ini mampu melakukan inspeksi massal terhadap infrastruktur web dengan footprint memori yang minimal namun dengan throughput yang maksimal.
 
 ---
 
 ## 1. Spesifikasi Teknis dan Core Engine
 
 ### 1.1 Asynchronous Runtime
-Dibangun di atas runtime **Tokio**, Rusty-Sentinel mengimplementasikan model I/O non-blocking yang memungkinkan penanganan ribuan koneksi konkuren secara simultan tanpa overhead thread sistem operasi yang besar.
+Dibangun di atas runtime **Tokio**, e.-xviaa-a02 mengimplementasikan model I/O non-blocking yang memungkinkan penanganan ribuan koneksi konkuren secara simultan tanpa overhead thread sistem operasi yang besar.
 
 ### 1.2 Concurrency Control
 Sistem menggunakan modul `std::sync::Arc` untuk berbagi state antar thread secara aman dan `tokio::sync::Semaphore` sebagai mekanisme *rate-limiting*. Hal ini memastikan beban request tetap terkendali dan mencegah *socket exhaustion* pada sistem host (Arch Linux).
@@ -48,7 +48,7 @@ Menangani abstraksi I/O file hasil temuan. Implementasi menggunakan `OpenOptions
 ## 3. Prosedur Instalasi (Optimasi Arch Linux)
 
 ### 3.1 Prasyarat Sistem
-Pastikan toolchain Rust dan library TLS telah terkonfigurasi:
+Pastikan toolchain Rust dan library TLS telah terkonfigurasi pada sistem Anda:
 
 ```bash
 sudo pacman -S --needed rustup base-devel openssl pkgconf
