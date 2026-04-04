@@ -4,23 +4,11 @@ version = "0.2.0"
 edition = "2021"
 
 [dependencies]
-# Runtime asinkron standar industri untuk Rust
 tokio = { version = "1", features = ["full"] }
-
-# HTTP Client untuk mengirim request ke target
 reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
-
-# Pewarnaan output di terminal
 colored = "2.0"
-
-# Parser argumen CLI (agar bisa pakai --target atau --threads)
 clap = { version = "4.0", features = ["derive"] }
-
-# Utility untuk menangani stream dan join_all
 futures = "0.3"
-
-# Untuk manajemen konfigurasi yang aman antar thread
 arc-swap = "1.6"
-
-# Hash map super cepat untuk deduplikasi atau indexing
 ahash = "0.8"
+indicatif = "0.17"
